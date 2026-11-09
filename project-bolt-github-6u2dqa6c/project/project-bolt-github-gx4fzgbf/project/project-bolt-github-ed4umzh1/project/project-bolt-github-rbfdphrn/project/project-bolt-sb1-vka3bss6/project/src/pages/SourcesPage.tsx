@@ -227,7 +227,7 @@ export default function SourcesPage({ liveData }: SourcesPageProps) {
               {logs.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-5 py-10 text-center text-sm text-ink-400">
-                    Журнал пуст. Запустите сбор данных кнопкой выше.
+                    Журнал пуст. Сбор данных выполняется автоматически по расписанию.
                   </td>
                 </tr>
               )}

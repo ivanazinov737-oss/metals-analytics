@@ -99,22 +99,6 @@ export function computeAveragePrice(records: PriceQuoteRecord[]): AveragePriceRe
   };
 }
 
-export interface RepresentativePrice {
-  value: number;
-  basis: 'real' | 'demo';
-  result: AveragePriceResult | null;
-}
-
-export function resolveRepresentativePrice(
-  result: AveragePriceResult,
-  simulatedPrice: number
-): RepresentativePrice {
-  if (result.weightedAverage !== null && result.quotationCount > 0) {
-    return { value: result.weightedAverage, basis: 'real', result };
-  }
-  return { value: simulatedPrice, basis: 'demo', result };
-}
-
 export const CONFIDENCE_LABELS: Record<AveragePriceResult['confidence'], string> = {
   high: 'Высокая',
   medium: 'Средняя',

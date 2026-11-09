@@ -168,7 +168,6 @@ export default function MetalDetailDialog({
             <h3 className="mb-3 text-sm font-medium text-ink-200">Сводка по источникам</h3>
             <PriceSummaryPanel
               state={quotations.state}
-              simulatedPrice={quote.price}
               unit={unitLabel}
               currency={metal.currency}
             />

@@ -1,4 +1,4 @@
-import { CONFIDENCE_COLORS, CONFIDENCE_LABELS, computeAveragePrice, resolveRepresentativePrice } from '@/services/averagePrice';
+import { CONFIDENCE_COLORS, CONFIDENCE_LABELS, computeAveragePrice } from '@/services/averagePrice';
 import DataStatusBadge from '@/components/common/DataStatusBadge';
 import { cn } from '@/lib/cn';
 import { formatIndex } from '@/lib/format';
@@ -7,7 +7,6 @@ import type { AveragePriceResult, PriceQuoteRecord } from '@/types/market';
 
 interface PriceSummaryPanelProps {
   state: AsyncState<PriceQuoteRecord[]>;
-  simulatedPrice: number;
   unit: string;
   currency: string;
 }
@@ -45,11 +44,10 @@ function buildTiles(result: AveragePriceResult, currency: string) {
   ];
 }
 
-export default function PriceSummaryPanel({ state, simulatedPrice, unit, currency }: PriceSummaryPanelProps) {
+export default function PriceSummaryPanel({ state, unit, currency }: PriceSummaryPanelProps) {
   const records = state.status === 'ready' ? state.data : [];
   const result = computeAveragePrice(records);
-  const representative = resolveRepresentativePrice(result, simulatedPrice);
-  const hasRealData = representative.basis === 'real';
+  const hasRealData = result.weightedAverage !== null && result.quotationCount > 0;
 
   return (
     <div className="rounded-xl border border-ink-800 bg-ink-950/60 p-4">
@@ -57,7 +55,9 @@ export default function PriceSummaryPanel({ state, simulatedPrice, unit, currenc
         <div>
           <p className="text-xs text-ink-400">METALS ANALYTICS — Репрезентативная цена за {unit}</p>
           <p className="mt-1 text-2xl font-semibold tabular-nums text-ink-100">
-            {formatIndex(representative.value)} {currency}
+            {hasRealData && result.weightedAverage !== null
+              ? `${formatIndex(result.weightedAverage)} ${currency}`
+              : 'Нет подтверждённых рыночных данных'}
           </p>
         </div>
         {hasRealData ? (
@@ -69,7 +69,7 @@ export default function PriceSummaryPanel({ state, simulatedPrice, unit, currenc
       <p className="mt-2 text-xs leading-relaxed text-ink-400">
         {hasRealData
           ? 'Средневзвешенная цена по реальным котировкам подключённых источников. Не является официальной биржевой ценой.'
-          : 'Реальных котировок нет. Показана демонстрационная цена — она не является рыночной.'}
+          : 'Реальных котировок пока нет. Цена не рассчитана, чтобы не показывать ложные данные.'}
       </p>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-ink-800 pt-4">
