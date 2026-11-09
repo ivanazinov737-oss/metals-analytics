@@ -66,7 +66,7 @@ SELECT cron.schedule(
   '0 * * * *',
   $cron$
   SELECT net.http_post(
-    url := 'https://hhtwfkdmbxcjjjyhpeij.supabase.co/functions/v1/collect-market-data',
+    url := 'https://wlsparecgsofvaetbasp.supabase.co/functions/v1/collect-market-data',
     headers := jsonb_build_object(
       'Content-Type', 'application/json',
       'x-collector-token', (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'collector_token')
